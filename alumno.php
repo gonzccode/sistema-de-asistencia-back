@@ -14,7 +14,7 @@ if ($method == "GET") {
     } else {
         $vector = array();
         $api = new Api();
-        $vector = $api->getAlumnos();
+        $vector = $api->getAlumnos_p();
         $json = json_encode($vector);
         echo $json;
     }

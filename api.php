@@ -1,7 +1,7 @@
 <?php
 class Api
 {
-    public function getAlumnos()
+    /*public function getAlumnos()
     {
         $vector = array();
         $conexion = new Conexion();
@@ -22,13 +22,37 @@ class Api
             );
         }
         return $vector;
+    }*/
+
+    public function getAlumnos_p()
+    {
+        $vector = array();
+        $conexion = new Conexion();
+        $db = $conexion->getConexion();
+        $sql = "SELECT a.id_alumno, a.contraseña, p.nombres, p.apellidos, p.dni, p.correo_electronico from mydb.alumno a inner join mydb.persona p on p.id_persona = a.persona_id_persona";
+        $consulta = $db->prepare($sql);
+        $consulta->execute();
+        while ($fila = $consulta->fetch()) {
+            $vector[] = array(
+                "id_alumno" => $fila['id_alumno'],
+                "password" => $fila['contraseña'],
+                "nombre" => $fila['nombres'],
+                "apellido" => $fila['apellidos'],
+                "dni" => $fila['dni'],
+                "correo" => $fila['correo_electronico']
+            );
+        }
+        return $vector;
     }
+
+
+    //funcion no utilizada
     public function getAlumno($id_alumno)
     {
         $vector = array();
         $conexion = new Conexion();
         $db = $conexion->getConexion();
-        $sql = "SELECT * FROM pruebaasistencia.asistencia WHERE id_alumno=:id_alumno";
+        $sql = "SELECT * FROM mydb.alumno WHERE id_alumno=:id_alumno";
         $consulta = $db->prepare($sql);
         $consulta->bindParam(':id_alumno', $id_alumno);
         $consulta->execute();
@@ -44,7 +68,8 @@ class Api
                 "persona_id_persona" => $fila['persona_id_persona']
             );
         }
-        return $vector[0];
+        //return $vector[0];
+        return $vector;
     }
     public function getCoordinadores()
     {
@@ -64,6 +89,8 @@ class Api
         }
         return $vector;
     }
+
+    //funcion no utilizada
     public function getCoordinador($id)
     {
         $vector = array();
@@ -82,5 +109,17 @@ class Api
             );
         }
         return $vector[0];
+    }
+
+    public function addProducto($idAlumno, $pass)
+    {
+        $conexion = new Conexion();
+        $db = $conexion->getConexion();
+        $sql = "UPDATE mydb.alumno SET contraseña = :pass WHERE id_alumno=:idAlumno";
+        $consulta = $db->prepare($sql);
+        $consulta->bindParam(':idAlumno', $idAlumno);
+        $consulta->bindParam(':pass', $pass);
+        $consulta->execute();
+        return '{"msg":"contraseña actualizada"}';
     }
 }
