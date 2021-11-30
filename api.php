@@ -71,6 +71,53 @@ class Api
         //return $vector[0];
         return $vector;
     }
+
+    public function getJustificacion()
+    {
+        $vector = array();
+        $conexion = new Conexion();
+        $db = $conexion->getConexion();
+        $sql = "SELECT * from mydb.justificacion_faltas order by fecha desc";
+        $consulta = $db->prepare($sql);
+        $consulta->execute();
+        while ($fila = $consulta->fetch()) {
+            $vector[] = array(
+                "id_justificacion" => $fila['id_justificacion_faltas'],
+                "hora" => $fila['hora_justificacion'],
+                "fecha" => $fila['fecha'],
+                "estado_justificacion" => $fila['estado_justificacion_id_estado_justificacion'],
+                "tipo_falta" => $fila['tipo_falta_id_tipo_falta'],
+                "id_alumno" => $fila['alumno_id_alumno'],
+                "id_coordinador" => $fila['coordinador_id_coordinador'],
+                "id_detalle" => $fila['Detalle_justificacion_id_detalle_justificacion']
+            );
+        }
+        return $vector;
+    }
+
+    public function getAsistenciaAlumno()
+    {
+        $vector = array();
+        $conexion = new Conexion();
+        $db = $conexion->getConexion();
+        $sql = "SELECT * from mydb.registro_asistencia order by fecha desc";
+        $consulta = $db->prepare($sql);
+        $consulta->execute();
+        while ($fila = $consulta->fetch()) {
+            $vector[] = array(
+                "id_registro" => $fila['id_registro_asistencia'],
+                "hora" => $fila['hora_ingreso'],
+                "fecha" => $fila['fecha'],
+                "id_coordinador" => $fila['coordinador_id_coordinador'],
+                "id_alumno" => $fila['alumno_id_alumno'],
+                "tipo_asistencia" => $fila['tipo_asistencia_id_tipo_asistencia'],
+                "estado_asistencia" => $fila['estado_asistencia_id_estado_asistencia']
+            );
+        }
+        return $vector;
+    }
+
+    //funcion utilizada
     public function getCoordinadores()
     {
         $vector = array();
@@ -111,7 +158,7 @@ class Api
         return $vector[0];
     }
 
-    public function addProducto($idAlumno, $pass)
+    public function updatePass($idAlumno, $pass)
     {
         $conexion = new Conexion();
         $db = $conexion->getConexion();
@@ -121,5 +168,31 @@ class Api
         $consulta->bindParam(':pass', $pass);
         $consulta->execute();
         return '{"msg":"contraseña actualizada"}';
+    }
+
+
+
+    public function insertDetalleJustificacion($idAlumno, $descripcionjustificacion)
+    {
+        $conexion = new Conexion();
+        $db = $conexion->getConexion();
+        $sql = "INSERT into mydb.detalle_justificacion  values('DJ-68020867M-10',:descripcionjustificacion,'1',:idAlumno)";
+        $consulta = $db->prepare($sql);
+        $consulta->bindParam(':idAlumno', $idAlumno);
+        $consulta->bindParam(':descripcionjustificacion', $descripcionjustificacion);
+        $consulta->execute();
+        return '{"msg":"detalle insertada"}';
+    }
+    public function updateJustificacion($idAlumno, $idJustificacion)
+    {
+        $conexion = new Conexion();
+        $db = $conexion->getConexion();
+        $sql = "UPDATE mydb.justificacion_faltas SET Detalle_justificacion_id_detalle_justificacion = 'DJ-68020867M-10', estado_justificacion_id_estado_justificacion='1' where id_justificacion_faltas = :idJustificacion and alumno_id_alumno = :idAlumno";
+        $consulta = $db->prepare($sql);
+        $consulta->bindParam(':idAlumno', $idAlumno);
+        $consulta->bindParam(':idJustificacion', $idJustificacion);
+        $consulta->execute();
+        return '{"msg":"justificacion actualizado"}';
+        //DJ-68020867M-08 id detalle
     }
 }

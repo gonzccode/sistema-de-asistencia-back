@@ -14,19 +14,8 @@ if ($method == "GET") {
     } else {
         $vector = array();
         $api = new Api();
-        $vector = $api->getAlumnos_p();
+        $vector = $api->getJustificacion();
         $json = json_encode($vector);
         echo $json;
     }
-}
-
-if ($method == "POST") {
-    $json = null;
-    $data = json_decode(file_get_contents("php://input"), true);
-    $idAlumno = $data['idAlumno'];
-    $dniAlumno = $data['dniAlumno'];
-    $pass = $data['newPassword'];
-    $api = new Api();
-    $json = $api->updatePass($idAlumno, $pass);
-    echo $json;
 }
