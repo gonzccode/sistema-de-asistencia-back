@@ -7,13 +7,15 @@ $method = $_SERVER['REQUEST_METHOD'];
 if ($method == "POST") {
     $json = null;
     $data = json_decode(file_get_contents("php://input"), true);
+    $idDetalleJustificacion = $data['id_detalle_justificacion'];
     $idJustificacion = $data['idJustificacion'];
     $idAlumno = $data['idAlumno'];
     $descripcionjustificacion = $data['descripcionjustificacion'];
+    $fileName = $data['a'];
     $api = new Api();
     $api1 = new Api();
-    $json = $api->insertDetalleJustificacion($idAlumno, $descripcionjustificacion);
-    $json1 = $api1->updateJustificacion($idAlumno, $idJustificacion);
+    $json = $api->insertDetalleJustificacion($idDetalleJustificacion, $idAlumno, $descripcionjustificacion, $fileName);
+    $json1 = $api1->updateJustificacion($idDetalleJustificacion, $idAlumno, $idJustificacion);
     echo $json1;
     echo $json;
     echo 'esto es post';
